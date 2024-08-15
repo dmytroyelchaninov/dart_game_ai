@@ -2,11 +2,29 @@ import time
 import datetime
 import sys
 import logging
-from main import Main, Player
+from .main import Game, Player
 import subprocess
 
-class StartGame(Main):
+
+class StartGame(Game):
+    """
+    A class to manage the start of the game, including player setup and game name.
+
+    Methods:
+    -------
+    n_players():
+        Prompts the user to input the number of players.
+    
+    select_players():
+        Placeholder for player selection logic.
+    
+    add_players(num_players):
+        Adds players to the game, ensuring no duplicate names.
+    """
     def __init__(self):
+        """
+        Initializes the StartGame class, sets the initial game name and player list.
+        """
         super().__init__()
         self._error = False
         self._players = []
@@ -14,21 +32,51 @@ class StartGame(Main):
 
     @property
     def players(self):
+        """
+        Gets the list of players.
+
+        Returns:
+        list: A list of player objects.
+        """
         return self._players
     
     @players.setter
     def players(self, value):
+        """
+        Sets the list of players.
+
+        Parameters:
+        value (list): A list of player objects.
+        """
         self._players = value
 
     @property
     def game_name(self):
+        """
+        Gets the game name.
+
+        Returns:
+        str: The name of the game.
+        """
         return self._game_name
     
     @game_name.setter
     def game_name(self, value):
+        """
+        Sets the game name.
+
+        Parameters:
+        value (str): The name of the game.
+        """
         self._game_name = value
 
     def n_players(self):
+        """
+        Prompts the user to input the number of players.
+
+        Returns:
+        int: The number of players.
+        """
         num_players = self.ensured_input(
             "How many are there?: \n",
             int
@@ -40,9 +88,21 @@ class StartGame(Main):
             self.exit_game(1)
     
     def select_players(self):
+        """
+        Placeholder for player selection logic.
+        """
         pass
 
-    def add_players(self, num_players): # REWORK, INCLUDE OPTION PLAYER ALREADY EXISTS BEFORE ADDING
+    def add_players(self, num_players):
+        """
+        Adds players to the game, ensuring no duplicate names.
+
+        Parameters:
+        num_players (int): The number of players to add.
+
+        Returns:
+        list: A list of player objects.
+        """
         for i in range(num_players):
             player_name = self.ensured_input(
                 f"Provide player {i+1} name:\n",
@@ -63,41 +123,5 @@ class StartGame(Main):
         return self.players
 
 
-
-def start_game():
-    """Starts the game, prompts for game_name, number of players and their names.\n
-    Returns game-name and players"""
-    game = StartGame()
-    game_name = game.ensured_input("Provide game name, if you want to use default name - press enter:\n", str)
-    if game_name != "":
-        game.game_name = game_name
-    game.check_error()
-    print(f"Welcome to {game.game_name}!")
-    time.sleep(2)
-    num_players = game.n_players()
-    game.check_error()
-    print(f"Number of players is {num_players}")
-    time.sleep(2)
-    players = game.add_players(num_players)
-    game.check_error()
-    print("Players added successfully!")
-    time.sleep(2)
-    print("Players:")
-    for player in players:
-        print(player.name)
-    time.sleep(2)
-    game.save_game(game.game_name, players)
-    return game.game_name, players
-
-
 if __name__ == "__main__":
-    
-    print("Checking requirements...")
-    result = subprocess.run([sys.executable, "requirements_install.py"], capture_output=True, text=True)
-    if "True" in result.stdout:
-        pass
-    else:
-        print("Error installing requirements")
-        time.sleep(2)
-        Main().exit_game(1)
-    start_game()
+    pass
