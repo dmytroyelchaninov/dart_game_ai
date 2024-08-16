@@ -10,12 +10,14 @@ from scipy.optimize import least_squares
 import os
 import logging
 
+# THIS GUY TRANFORMS IMAGE TAKEN FROM AN ANGLE TO THE STRAIGHT VIEW 800x800, CROPPED BY OUTER CIRCLE
+
 
 # TODO:
-# TRY TRAIN SVM BASED ON DSCAN RESULTS IN FUTURE, OR NN 
+# TRY TRAIN SVM BASED ON DSCAN RESULTS IN FUTURE, OR NN? SAME FOR CENTER DETECTION
 # REWORK THE __INIT__ OF EACH CLASS, ADD SUPER()
 # REWORK CLASSES DIVISION!!!
-# THIS SCRIPT SHOULD HAVE MORE ACCURATE CENTER DETECTION
+# ACCURACY TEST, I DON'T LIKE IT
 
 class BoardTransform(Board):
     def __init__(self, board):
@@ -190,7 +192,7 @@ class BoardTransform(Board):
         
         cropped_img = masked_img[y:y+h, x:x+w]
         self._img = cropped_img
-        
+
         return self._img
     
     def mirror_image(self, axis):
@@ -459,18 +461,16 @@ class BoardTransform(Board):
         return rotated_coords
     
     def fit_ellipse(self, coords, outer=True):
-        # Ensure enough points for fitting ellipse
         if len(coords) < 5:
             raise ValueError("Not enough points to fit an ellipse.")
 
-        # Fit ellipse to the combined points
-        coords = np.array(coords, dtype=np.float32)  # Ensure the points are in float32 format
+        coords = np.array(coords, dtype=np.float32)
         ellipse = cv.fitEllipse(coords)
         if outer:
             self._outer_ellipse = ellipse
         else:
             self._inner_ellipse = ellipse
-        # Return the adjusted ellipse and its center
+
         return ellipse
 
 class PerspectiveTransform(BoardTransform):
@@ -824,6 +824,7 @@ def iterative_transform(board,
         plot_transformed.draw_center(tuple(int(x) for x in board._outer_ellipse[0]), color=(0, 0, 255), s=6)
         plot_transformed.display_image_self('After initial iterations', bgr=False)
     
+    # TODO: I WANT ANOTHER ACCURACY TECHNIQUE HERE
     if init_transform:
         def n_iter(deltas, accuracy):
             n_iterations = 0
@@ -848,34 +849,6 @@ def iterative_transform(board,
 
     return board
 
-# class PrintLogger:
-#     def __init__(self, logger, level):
-#         self.logger = logger
-#         self.level = level
-
-#     def write(self, message):
-#         if message.rstrip() != "":  # avoid logging empty lines
-#             self.logger.log(self.level, message.rstrip())
-
-#     def flush(self):
-#         pass
-
-# def setup_logging(output_subdir):
-#     logs_dir = os.path.join(output_subdir, 'logs')
-#     os.makedirs(logs_dir, exist_ok=True)
-#     log_filename = os.path.join(logs_dir, f"processing_log.txt")
-
-#     logging.basicConfig(
-#         filename=log_filename,
-#         filemode='w',
-#         format='%(asctime)s - %(levelname)s - %(message)s',
-#         level=logging.INFO
-#     )
-#     logging.getLogger().addHandler(logging.StreamHandler())
-
-#     # Redirect print statements to logging
-#     sys.stdout = PrintLogger(logging.getLogger(), logging.INFO)
-#     sys.stderr = PrintLogger(logging.getLogger(), logging.ERROR)
 
 def process_image(img_path, output_subdir, eps, min_samples, threshold, crop_scale, crop_eye, size_transform):
     print(f"Processing {img_path}")
@@ -910,7 +883,7 @@ def process_image(img_path, output_subdir, eps, min_samples, threshold, crop_sca
         transformed
         transformed.final_crop(transformed._outer_ellipse)
         transformed.resize_image(target_size=(800, 800))
-        # Save the transformed image
+
         processed_img_path = os.path.join(output_subdir, os.path.basename(img_path))
         cv.imwrite(processed_img_path, transformed._img)
         print(f"Processed image saved to {processed_img_path}")
@@ -927,6 +900,7 @@ def process_directory(input_dir, output_dir, eps, min_samples, threshold, crop_s
                 output_subdir = os.path.join(output_dir, relative_path)
                 os.makedirs(output_subdir, exist_ok=True)
 
+                # TODO:
                 # Setup logging for each subdirectory
                 # setup_logging(output_subdir)
 

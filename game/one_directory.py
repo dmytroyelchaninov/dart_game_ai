@@ -1,6 +1,8 @@
 import os
 import shutil
 
+# SCRIPT TO COMPILE IMAGES FROM MULTIPLE DIRECTORIES INTO ONE
+
 def compile_images(input_dir, output_dir):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -23,6 +25,6 @@ def compile_images(input_dir, output_dir):
                 print(f"Copied {source_path} to {destination_path}")
 
 if __name__ == '__main__':
-    input_dir = "../data/processed/straight_separate/"
-    output_dir = "../data/processed/straight/"
+    input_dir = "../data/processed/angle_separate/"
+    output_dir = "../data/processed/angle/"
     compile_images(input_dir, output_dir)

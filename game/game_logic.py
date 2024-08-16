@@ -2,7 +2,7 @@ import sys
 import time
 import subprocess
 import logging
-from main import Main, Player
+from main import Game, Player
 from requirements_install import RequirementsInstallation
 from start_game import StartGame 
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     else:
         print("Error installing requirements")
         time.sleep(2)
-        Main().exit_game(1)
+        Game().exit_game(1)
 
     # Start the game
     game_name, players = start_game()
