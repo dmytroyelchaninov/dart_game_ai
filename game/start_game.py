@@ -2,9 +2,10 @@ import time
 import datetime
 import sys
 import logging
-from .main import Game, Player
+from main import Game, Player
 import subprocess
 
+# BASIC CLASS FOR GAME SETUP
 
 class StartGame(Game):
     """
@@ -78,7 +79,7 @@ class StartGame(Game):
         int: The number of players.
         """
         num_players = self.ensured_input(
-            "How many are there?: \n",
+            "How many players are there?: \n",
             int
         )
         if num_players is not None:

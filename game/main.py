@@ -105,6 +105,7 @@ class Game():
                     value = int(item)
                     if range_ and (value < range_[0] or value > range_[1]):
                        return None
+                    return value
                 elif class_type == float:
                     return float(item)
                 elif class_type == str:
@@ -235,6 +236,7 @@ class Player(Game):
         super().__init__()
         self._name = name
         self._crowns = 0
+        self._scores = []
 
     @property
     def name(self):
@@ -278,6 +280,11 @@ class Board(Game):
             return None
         img = cv.imread(self._img_path, cv.IMREAD_COLOR)
         if img is None:
+            try:
+                os.remove(self._img_path)
+                print(f"Image at path {self._img_path} could not be loaded and has been deleted.")
+            except OSError as e:
+                print(f"Error deleting file: {e}")
             raise ValueError(f"Image at path {self._img_path} could not be loaded.")
         
         return img
@@ -314,7 +321,5 @@ class Board(Game):
     def save_image(self, filename):
         cv.imwrite(filename, self._img)
     
-    
-
 if __name__ == "__main__":
     pass
