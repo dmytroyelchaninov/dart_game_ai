@@ -8,4 +8,6 @@ python game.py
 
 Next airdrop the picture, when prompted. Script automatically will start processing the last airdopropped picture. Processed image will be saved to /ARCHIVE folder
 
+For a test run, answer "y" right after game initialized. There are 6 random images for test, so you will be able to select one of them (type any number in range 1-6)
+
 Enjoy :)

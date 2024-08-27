@@ -1162,7 +1162,7 @@ def iterative_transform(board,
         board = find_ellipse(board, eps=eps, min_samples=min_samples, threshold=threshold, plot_ellipse=False)
         board, predictions, shifts = transform_perspective(board, predictions, plots=plot_steps, crop_eye=crop_eye, shifts=shifts)
         if i == 3 or i==4 or i == 5:
-            part2 = YOLO('./yolos/best.pt')
+            part2 = YOLO('./yolos/part2.pt')
             cropped = crop_around(board, predictions, square_size=40)
             predictions_new, n_classes_predictions = yolo_predict(cropped, part2)
             if len(predictions_new) == len(predictions):

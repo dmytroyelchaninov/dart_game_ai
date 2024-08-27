@@ -265,10 +265,12 @@ def predict(board, part1, part2):
 
     return predictions
 
-def process_image(size=(1000, 1000), accuracy=0.05, iterations=5, show=False):
+def process_image(size=(1000, 1000), accuracy=0.05, iterations=5, show=False, test=False, test_n=0):
     
-    img_path = wait_for_image()
-    # img_path = '../UPLOAD/12.jpg'
+    if test:
+        img_path = f'../test/{test_n}.jpg'
+    else:
+        img_path = wait_for_image()
     
     original = Board(img_path)
     board = BoardTransform(original)
@@ -303,7 +305,7 @@ def process_image_lib(img_path, size=(1000, 1000), accuracy=0.05, iterations=5, 
     
     # Models
     part1 = YOLO('./yolos/part1.pt')
-    part2 = YOLO('./yolos/best.pt')
+    part2 = YOLO('./yolos/part2.pt')
     predictions = predict(board, part1, part2)
 
     transformed, processed_img, predictions = transform(img_path, predictions, size_transform=size, accuracy=accuracy, iterations=iterations)
@@ -354,17 +356,20 @@ def process_image_library(directory, size=(1000, 1000), accuracy=0.05, iteration
 
 
 if __name__ == "__main__":
-
-    # board, predictions, path, shift_angle = process_image(size=(1000, 1000), accuracy=0.05, iterations=5, show=True)
-    # scores = Scores(board)
-    # scores.define_zones(show=False)
-    # scores.get_scores(predictions, shift_angle=shift_angle)
-    # img = scores.draw_distances_and_angles(predictions)
-    # score = scores._scores
-    # round_score = scores.final_score
-    # print(f"Nice throw! You hit: {','.join(map(str, score))}")
-    # result_img = scores.draw_distances_and_angles(predictions, show=True)
-    # # archive(result_img, path)
+    
+    is_test = input("Is that test run? (y/n): ")
+    if is_test.lower() == 'y':
+        test_n = input("There are few test images, select the number of picture (1-6): ")
+        board, predictions, path, shift_angle = process_image(size=(1000, 1000), accuracy=0.05, iterations=5, show=False, test=True, test_n=int(test_n))
+        scores = Scores(board)
+        scores.define_zones(show=False)
+        scores.get_scores(predictions, shift_angle=shift_angle)
+        img = scores.draw_distances_and_angles(predictions)
+        score = scores._scores
+        round_score = scores.final_score
+        print(f"Nice throw! You hit: {','.join(map(str, score))}")
+        result_img = scores.draw_distances_and_angles(predictions, show=True)
+        sys.exit(0)
 
 
     # INSTALL REQUIREMENTS
